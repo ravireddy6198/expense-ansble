@@ -1,11 +1,16 @@
 - name: configure mysql server
   hosts: mysql
   become: yes
+  vars:
+    password: ExpenseApp@1
   tasks:
   - name: install mysql libraries
     ansible.builtin.pip:
-      name: PyMySQL
+      name: {{item}}
       executable: pip3.9
+    loop:
+    - cryptography
+    - PyMySQL
 
   - name: install mysql
     ansible.builtin.package:
@@ -21,7 +26,7 @@
   - name: connect to mysql server
     community.mysql.mysql_info:
       login_user: root
-      login_password: ExpenseApp@1
+      login_password: {{password}}
       login_host: 54.209.154.195
     register: mysql_info
     ignore_errors: true
